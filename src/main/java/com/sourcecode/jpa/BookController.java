@@ -2,6 +2,7 @@ package com.sourcecode.jpa;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
 
     @Autowired
-    BookOperations bookOps;
+    BookRepository bookOps;
 
-    @GetMapping("/create-book")
+    @PostMapping("/create-book")
     public void createBook(@RequestBody Book book) {
         bookOps.save(book);
     }
@@ -27,7 +28,12 @@ public class BookController {
 
     @GetMapping("/book")
     public Book getBookById(@RequestParam(value = "id") int id) {
-        return bookOps.findById(id).get();
+        Optional<Book> resultBook = bookOps.findById(id);
+        if (resultBook.isPresent()) {
+            return resultBook.get();
+        } else {
+            return null;
+        }
     }
 
 }
